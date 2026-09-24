@@ -8,8 +8,11 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
+import hu.infokristaly.homework4timersonandroid.ui.LocalizedApp
 import hu.infokristaly.homework4timersonandroid.ui.TimerMainScreen
 import hu.infokristaly.homework4timersonandroid.ui.theme.Homework4TimersOnAndroidTheme
 import hu.infokristaly.homework4timersonandroid.viewmodel.TimerViewModel
@@ -27,9 +30,13 @@ class MainActivity : ComponentActivity() {
         requestNotificationPermissionIfNeeded()
 
         setContent {
-            Homework4TimersOnAndroidTheme {
-                val timerViewModel: TimerViewModel = viewModel()
-                TimerMainScreen(viewModel = timerViewModel)
+            val timerViewModel: TimerViewModel = viewModel()
+            val appLanguage by timerViewModel.appLanguage.collectAsState()
+
+            LocalizedApp(languageCode = appLanguage) {
+                Homework4TimersOnAndroidTheme {
+                    TimerMainScreen(viewModel = timerViewModel)
+                }
             }
         }
     }

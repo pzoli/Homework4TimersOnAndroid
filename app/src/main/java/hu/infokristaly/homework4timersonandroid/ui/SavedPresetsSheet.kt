@@ -41,8 +41,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import hu.infokristaly.homework4timersonandroid.R
 import hu.infokristaly.homework4timersonandroid.data.SavedIntervalList
 import hu.infokristaly.homework4timersonandroid.data.TimerIntervalItem
 import java.text.SimpleDateFormat
@@ -87,12 +89,12 @@ fun SavedPresetsSheet(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Mentett sablonok",
+                    text = stringResource(R.string.saved_presets),
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold
                 )
                 TextButton(onClick = onDismiss) {
-                    Text("Bezárás")
+                    Text(stringResource(R.string.close))
                 }
             }
 
@@ -117,13 +119,13 @@ fun SavedPresetsSheet(
                         )
                         Spacer(modifier = Modifier.height(12.dp))
                         Text(
-                            "Nincsenek mentett sablonok",
+                            stringResource(R.string.no_saved_presets_title),
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            "Mentsd el a jelenlegi intervallum sorozatodat a lent található gombra koppintva.",
+                            stringResource(R.string.no_saved_presets_desc),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -159,7 +161,7 @@ fun SavedPresetsSheet(
                                             Spacer(modifier = Modifier.width(8.dp))
                                             AssistChip(
                                                 onClick = { },
-                                                label = { Text("Aktív") }
+                                                label = { Text(stringResource(R.string.active)) }
                                             )
                                         }
                                     }
@@ -169,16 +171,16 @@ fun SavedPresetsSheet(
                                             presetToRename = list
                                             renameText = list.name
                                         }) {
-                                            Icon(Icons.Default.Edit, contentDescription = "Név szerkesztése")
+                                            Icon(Icons.Default.Edit, contentDescription = stringResource(R.string.edit_name))
                                         }
                                         IconButton(onClick = { onDeletePreset(list) }) {
-                                            Icon(Icons.Default.Delete, contentDescription = "Törlés", tint = MaterialTheme.colorScheme.error)
+                                            Icon(Icons.Default.Delete, contentDescription = stringResource(R.string.delete), tint = MaterialTheme.colorScheme.error)
                                         }
                                     }
                                 }
 
                                 Text(
-                                    text = "${list.items.size} elem • ${dateFormat.format(Date(list.createdAt))}",
+                                    text = "${stringResource(R.string.items_count_format, list.items.size)} • ${dateFormat.format(Date(list.createdAt))}",
                                     style = MaterialTheme.typography.bodySmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
@@ -194,7 +196,7 @@ fun SavedPresetsSheet(
                                 ) {
                                     Icon(Icons.Default.Download, contentDescription = null)
                                     Spacer(modifier = Modifier.width(8.dp))
-                                    Text(if (isActive) "Újratöltés" else "Betöltés")
+                                    Text(if (isActive) stringResource(R.string.reload) else stringResource(R.string.load))
                                 }
                             }
                         }
@@ -216,7 +218,7 @@ fun SavedPresetsSheet(
                 ) {
                     Icon(Icons.Default.Add, contentDescription = null)
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text("Mentés új sablonként")
+                    Text(stringResource(R.string.save_current_as_new))
                 }
             }
         }
@@ -225,15 +227,15 @@ fun SavedPresetsSheet(
     if (isShowingSaveAsNewDialog) {
         AlertDialog(
             onDismissRequest = { isShowingSaveAsNewDialog = false },
-            title = { Text("Sorozat mentése újként") },
+            title = { Text(stringResource(R.string.save_sequence_as_new_title)) },
             text = {
                 Column {
-                    Text("Add meg az új menteni kívánt intervallum sorozat nevét:")
+                    Text(stringResource(R.string.enter_sequence_name))
                     Spacer(modifier = Modifier.height(8.dp))
                     OutlinedTextField(
                         value = saveAsNewName,
                         onValueChange = { saveAsNewName = it },
-                        label = { Text("Sablon neve") },
+                        label = { Text(stringResource(R.string.template_name)) },
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth()
                     )
@@ -250,12 +252,12 @@ fun SavedPresetsSheet(
                     },
                     enabled = saveAsNewName.trim().isNotEmpty()
                 ) {
-                    Text("Mentés")
+                    Text(stringResource(R.string.save))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { isShowingSaveAsNewDialog = false }) {
-                    Text("Mégse")
+                    Text(stringResource(R.string.cancel))
                 }
             }
         )
@@ -264,15 +266,15 @@ fun SavedPresetsSheet(
     if (presetToRename != null) {
         AlertDialog(
             onDismissRequest = { presetToRename = null },
-            title = { Text("Név szerkesztése") },
+            title = { Text(stringResource(R.string.rename_title)) },
             text = {
                 Column {
-                    Text("Add meg a sablon új nevét:")
+                    Text(stringResource(R.string.enter_new_name))
                     Spacer(modifier = Modifier.height(8.dp))
                     OutlinedTextField(
                         value = renameText,
                         onValueChange = { renameText = it },
-                        label = { Text("Új név") },
+                        label = { Text(stringResource(R.string.new_name)) },
                         singleLine = true,
                         modifier = Modifier.fillMaxWidth()
                     )
@@ -290,12 +292,12 @@ fun SavedPresetsSheet(
                     },
                     enabled = renameText.trim().isNotEmpty()
                 ) {
-                    Text("Mentés")
+                    Text(stringResource(R.string.save))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { presetToRename = null }) {
-                    Text("Mégse")
+                    Text(stringResource(R.string.cancel))
                 }
             }
         )

@@ -8,6 +8,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -31,14 +34,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import hu.infokristaly.homework4timersonandroid.R
 import hu.infokristaly.homework4timersonandroid.data.IntervalItemType
 import hu.infokristaly.homework4timersonandroid.data.TimerIntervalItem
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Remove
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -78,10 +80,10 @@ fun IntervalEditSheet(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 TextButton(onClick = onDismiss) {
-                    Text("Mégse")
+                    Text(stringResource(R.string.cancel))
                 }
                 Text(
-                    text = if (itemToEdit == null) "Új felvétel" else "Szerkesztés",
+                    text = if (itemToEdit == null) stringResource(R.string.new_entry) else stringResource(R.string.edit_entry),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
@@ -93,22 +95,22 @@ fun IntervalEditSheet(
                     },
                     enabled = isFormValid
                 ) {
-                    Text(if (itemToEdit == null) "Hozzáadás" else "Mentés")
+                    Text(if (itemToEdit == null) stringResource(R.string.add) else stringResource(R.string.save))
                 }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Text("Elem típusa", style = MaterialTheme.typography.labelLarge)
+            Text(stringResource(R.string.item_type), style = MaterialTheme.typography.labelLarge)
             Spacer(modifier = Modifier.height(8.dp))
 
             SingleChoiceSegmentedButtonRow(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 val types = listOf(
-                    IntervalItemType.INTERVAL to "Intervallum",
-                    IntervalItemType.OPEN_BRACKET to "Nyitó (",
-                    IntervalItemType.CLOSE_BRACKET to "Záró )"
+                    IntervalItemType.INTERVAL to stringResource(R.string.interval),
+                    IntervalItemType.OPEN_BRACKET to stringResource(R.string.open_bracket_short),
+                    IntervalItemType.CLOSE_BRACKET to stringResource(R.string.close_bracket_short)
                 )
                 types.forEachIndexed { index, pair ->
                     SegmentedButton(
@@ -133,7 +135,7 @@ fun IntervalEditSheet(
                             OutlinedTextField(
                                 value = minutesText,
                                 onValueChange = { minutesText = it },
-                                label = { Text("Perc") },
+                                label = { Text(stringResource(R.string.minutes)) },
                                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                                 modifier = Modifier.fillMaxWidth(),
                                 singleLine = true
@@ -142,7 +144,7 @@ fun IntervalEditSheet(
                             OutlinedTextField(
                                 value = labelText,
                                 onValueChange = { labelText = it },
-                                label = { Text("Címke") },
+                                label = { Text(stringResource(R.string.label)) },
                                 modifier = Modifier.fillMaxWidth(),
                                 singleLine = true
                             )
@@ -155,7 +157,7 @@ fun IntervalEditSheet(
                         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow)
                     ) {
                         Text(
-                            text = "Nyitó zárójel ( megadása a csoportos ismétlés kezdéséhez.",
+                            text = stringResource(R.string.open_bracket_hint),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             modifier = Modifier.padding(16.dp)
@@ -173,23 +175,26 @@ fun IntervalEditSheet(
                                 horizontalArrangement = Arrangement.SpaceBetween,
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Text("Ismétlések száma: $repeatCount", style = MaterialTheme.typography.bodyLarge)
+                                Text(
+                                    text = stringResource(R.string.repeat_count_label, repeatCount),
+                                    style = MaterialTheme.typography.bodyLarge
+                                )
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     IconButton(
                                         onClick = { if (repeatCount > 1) repeatCount-- }
                                     ) {
-                                        Icon(Icons.Default.Remove, contentDescription = "Csökkentés")
+                                        Icon(Icons.Default.Remove, contentDescription = stringResource(R.string.decrease))
                                     }
                                     IconButton(
                                         onClick = { if (repeatCount < 99) repeatCount++ }
                                     ) {
-                                        Icon(Icons.Default.Add, contentDescription = "Növelés")
+                                        Icon(Icons.Default.Add, contentDescription = stringResource(R.string.increase))
                                     }
                                 }
                             }
                             Spacer(modifier = Modifier.height(8.dp))
                             Text(
-                                text = "A nyitó és záró zárójel közötti intervallumok ennyiszer fognak megismétlődni.",
+                                text = stringResource(R.string.close_bracket_hint),
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )

@@ -15,6 +15,7 @@ class PreferencesRepository(context: Context) {
         private const val KEY_ACTIVE_PRESET_ID = "activePresetID"
         private const val KEY_ACTIVE_PRESET_NAME = "activePresetName"
         private const val KEY_AUTO_CONTINUE = "autoContinueNextInterval"
+        private const val KEY_APP_LANGUAGE = "appLanguage"
         private const val KEY_WORKSPACE_ITEMS = "workspaceItems"
         private const val KEY_SAVED_PRESETS = "savedPresets"
     }
@@ -34,6 +35,10 @@ class PreferencesRepository(context: Context) {
     var autoContinueNextInterval: Boolean
         get() = prefs.getBoolean(KEY_AUTO_CONTINUE, false)
         set(value) = prefs.edit().putBoolean(KEY_AUTO_CONTINUE, value).apply()
+
+    var appLanguage: String
+        get() = prefs.getString(KEY_APP_LANGUAGE, "hu") ?: "hu"
+        set(value) = prefs.edit().putString(KEY_APP_LANGUAGE, value).apply()
 
     fun getWorkspaceItems(): List<TimerIntervalItem> {
         val json = prefs.getString(KEY_WORKSPACE_ITEMS, null) ?: return emptyList()

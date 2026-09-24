@@ -37,6 +37,9 @@ class TimerViewModel(application: Application) : AndroidViewModel(application) {
     private val _autoContinue = MutableStateFlow(false)
     val autoContinue: StateFlow<Boolean> = _autoContinue.asStateFlow()
 
+    private val _appLanguage = MutableStateFlow("hu")
+    val appLanguage: StateFlow<String> = _appLanguage.asStateFlow()
+
     private val _isRunning = MutableStateFlow(false)
     val isRunning: StateFlow<Boolean> = _isRunning.asStateFlow()
 
@@ -74,6 +77,7 @@ class TimerViewModel(application: Application) : AndroidViewModel(application) {
 
     private fun loadFromPrefs() {
         _autoContinue.value = repo.autoContinueNextInterval
+        _appLanguage.value = repo.appLanguage
         _activePresetID.value = repo.activePresetID
         _activePresetName.value = repo.activePresetName
         _savedLists.value = repo.getSavedPresets()
@@ -90,6 +94,11 @@ class TimerViewModel(application: Application) : AndroidViewModel(application) {
     fun setAutoContinue(value: Boolean) {
         _autoContinue.value = value
         repo.autoContinueNextInterval = value
+    }
+
+    fun setAppLanguage(lang: String) {
+        _appLanguage.value = lang
+        repo.appLanguage = lang
     }
 
     fun buildExecutionPlan(items: List<TimerIntervalItem>): List<ExecutionStep> {

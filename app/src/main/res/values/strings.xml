@@ -1,3 +1,88 @@
 <resources>
-    <string name="app_name">Homework4TimersOnAndroid</string>
+    <string name="app_name">Intervallum időzítő</string>
+
+    <!-- Main Screen & Header -->
+    <string name="loaded_preset_label">Betöltött sablon: </string>
+    <string name="no_preset_custom">Nincs (Egyéni)</string>
+    <string name="save">Mentés</string>
+    <string name="save_as">Mentés újként...</string>
+    <string name="running_status_title">Futás állapota</string>
+    <string name="waiting_for_acknowledgment">Nyugtázásra vár</string>
+    <string name="paused">Felfüggesztve</string>
+    <string name="interval_expired_message">Az intervallum lejárt! Koppints a gombra a következő szakasz indításához.</string>
+    <string name="start_next_section">Következő szakasz indítása</string>
+    <string name="remaining_time_format">Hátralévő idő: %s</string>
+    <string name="step_progress_format">Lépés %1$d/%2$d</string>
+    <string name="no_running_section">Nincs futó szakasz</string>
+    <string name="no_intervals_title">Nincs intervallum</string>
+    <string name="no_intervals_desc">Koppints a + gombra új intervallum vagy zárójel hozzáadásához, vagy tölts be egy mentett sablon.</string>
+    <string name="minutes_format">%d perc</string>
+    <string name="open_bracket">Nyitó zárójel</string>
+    <string name="repeat_count_format">%d× ismétlés</string>
+    <string name="play">Lejátszás</string>
+    <string name="pause">Felfüggesztés</string>
+    <string name="stop">Leállítás</string>
+    <string name="preset_saved_toast">Sablon sikeresen mentve!</string>
+
+    <!-- Toolbar & Menu -->
+    <string name="saved_presets">Mentett sablonok</string>
+    <string name="settings">Beállítások</string>
+    <string name="new_template">Új sablon</string>
+
+    <!-- Dialogs -->
+    <string name="save_as_new_template_title">Mentés új sablonként</string>
+    <string name="enter_new_template_name">Add meg az új sablon nevét:</string>
+    <string name="template_name">Sablon neve</string>
+    <string name="cancel">Mégse</string>
+    <string name="new_empty_template_title">Új üres sablon</string>
+    <string name="new_empty_template_message">Biztosan új üres sablont szeretnél létrehozni? A munkaterület elemei törlődnek.</string>
+    <string name="create_new_template_action">Új sablon létrehozása</string>
+
+    <!-- Interval Edit Sheet -->
+    <string name="new_entry">Új felvétel</string>
+    <string name="edit_entry">Szerkesztés</string>
+    <string name="add">Hozzáadás</string>
+    <string name="item_type">Elem típusa</string>
+    <string name="interval">Intervallum</string>
+    <string name="open_bracket_short">Nyitó (</string>
+    <string name="close_bracket_short">Záró )</string>
+    <string name="minutes">Perc</string>
+    <string name="label">Címke</string>
+    <string name="open_bracket_hint">Nyitó zárójel ( megadása a csoportos ismétlés kezdéséhez.</string>
+    <string name="repeat_count_label">Ismétlések száma: %d</string>
+    <string name="close_bracket_hint">A nyitó és záró zárójel közötti intervallumok ennyiszer fognak megismétlődni.</string>
+    <string name="increase">Növelés</string>
+    <string name="decrease">Csökkentés</string>
+
+    <!-- Saved Presets Sheet -->
+    <string name="no_saved_presets_title">Nincsenek mentett sablonok</string>
+    <string name="no_saved_presets_desc">Mentsd el a jelenlegi intervallum sorozatodat a lent található gombra koppintva.</string>
+    <string name="active">Aktív</string>
+    <string name="items_count_format">%d elem</string>
+    <string name="edit_name">Név szerkesztése</string>
+    <string name="delete">Törlés</string>
+    <string name="reload">Újratöltés</string>
+    <string name="load">Betöltés</string>
+    <string name="close">Bezárás</string>
+    <string name="save_current_as_new">Mentés új sablonként</string>
+    <string name="save_sequence_as_new_title">Sorozat mentése újként</string>
+    <string name="enter_sequence_name">Add meg az új menteni kívánt intervallum sorozat nevét:</string>
+    <string name="rename_title">Név szerkesztése</string>
+    <string name="enter_new_name">Add meg a sablon új nevét:</string>
+    <string name="new_name">Új név</string>
+
+    <!-- Settings Sheet -->
+    <string name="app_language">Alkalmazás nyelve</string>
+    <string name="language_hungarian">Magyar</string>
+    <string name="language_english">English</string>
+    <string name="timer_behavior">Időzítő működése</string>
+    <string name="auto_continue">Automatikus folytatás</string>
+    <string name="auto_continue_desc">Ha az automatikus folytatás be van kapcsolva, a következő időintervallum visszaszámlálása az előző lejárta után azonnal elindul. Ha ki van kapcsolva, a rendszer megvárja a felhasználói nyugtázást.</string>
+    <string name="done">Kész</string>
+
+    <!-- Service / Notifications -->
+    <string name="interval_default_title">Intervallum</string>
+    <string name="all_timers_finished">Az összes időzítés lejárt!</string>
+    <string name="timer_finished">Időzítés lejárt!</string>
+    <string name="copy_of_preset">%s másolata</string>
 </resources>

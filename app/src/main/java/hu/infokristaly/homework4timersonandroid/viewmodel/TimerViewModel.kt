@@ -66,6 +66,7 @@ class TimerViewModel(application: Application) : AndroidViewModel(application) {
 
     private var executionPlan: List<ExecutionStep> = emptyList()
     private var timerJob: Job? = null
+    private var stepEndRealtimeMillis: Long = 0L
 
     init {
         loadFromPrefs()
@@ -184,6 +185,8 @@ class TimerViewModel(application: Application) : AndroidViewModel(application) {
 
     fun pause() {
         if (!_isRunning.value || _isPaused.value) return
+        val now = android.os.SystemClock.elapsedRealtime()
+        _remainingSeconds.value = maxOf(0, Math.round((stepEndRealtimeMillis - now) / 1000.0).toInt())
         _isPaused.value = true
         _isWaitingForAcknowledgment.value = false
         timerJob?.cancel()
@@ -191,6 +194,7 @@ class TimerViewModel(application: Application) : AndroidViewModel(application) {
 
     fun resume() {
         if (!_isRunning.value || !_isPaused.value) return
+        stepEndRealtimeMillis = android.os.SystemClock.elapsedRealtime() + (_remainingSeconds.value * 1000L)
         _isPaused.value = false
         startTicking(getApplication())
     }
@@ -233,6 +237,7 @@ class TimerViewModel(application: Application) : AndroidViewModel(application) {
         _progressIndex.value = step.originalIndex
         _currentLabel.value = if (step.item.label.isEmpty()) "Intervallum" else step.item.label
         _remainingSeconds.value = maxOf(0, step.item.minutes * 60)
+        stepEndRealtimeMillis = android.os.SystemClock.elapsedRealtime() + (_remainingSeconds.value * 1000L)
 
         val title = _currentLabel.value ?: "Intervallum"
         val body = "Hátralévő idő: ${formatTime(_remainingSeconds.value)}"
@@ -244,14 +249,15 @@ class TimerViewModel(application: Application) : AndroidViewModel(application) {
         timerJob = viewModelScope.launch {
             while (isActive && _isRunning.value && !_isPaused.value) {
                 delay(1000L)
-                val currentRem = _remainingSeconds.value
-                if (currentRem > 1) {
-                    _remainingSeconds.value = currentRem - 1
+                val now = android.os.SystemClock.elapsedRealtime()
+                val diffSeconds = maxOf(0, Math.round((stepEndRealtimeMillis - now) / 1000.0).toInt())
+                _remainingSeconds.value = diffSeconds
+
+                if (diffSeconds > 0) {
                     val title = _currentLabel.value ?: "Intervallum"
-                    val body = "Hátralévő idő: ${formatTime(_remainingSeconds.value)}"
+                    val body = "Hátralévő idő: ${formatTime(diffSeconds)}"
                     TimerService.updateNotification(context, title, body)
                 } else {
-                    _remainingSeconds.value = 0
                     val currentIdx = _currentStepIndex.value ?: 0
                     val isLast = currentIdx >= executionPlan.size - 1
                     val title = _currentLabel.value ?: "Intervallum"

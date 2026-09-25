@@ -244,13 +244,22 @@ class TimerViewModel(application: Application) : AndroidViewModel(application) {
         val step = executionPlan[stepIndex]
         _currentStepIndex.value = stepIndex
         _progressIndex.value = step.originalIndex
-        _currentLabel.value = if (step.item.label.isEmpty()) "Intervallum" else step.item.label
+        _currentLabel.value = if (step.item.label.isEmpty()) {
+            if (_appLanguage.value == "en") "Interval" else "Intervallum"
+        } else step.item.label
         _remainingSeconds.value = maxOf(0, step.item.minutes * 60)
         stepEndRealtimeMillis = android.os.SystemClock.elapsedRealtime() + (_remainingSeconds.value * 1000L)
 
-        val title = _currentLabel.value ?: "Intervallum"
+        val title = _currentLabel.value ?: if (_appLanguage.value == "en") "Interval" else "Intervallum"
         val body = "Hátralévő idő: ${formatTime(_remainingSeconds.value)}"
-        TimerService.startService(context, title, body)
+        val textToSpeak = if (_appLanguage.value == "en") "$title section starting" else "$title szakasz indul"
+        TimerService.startService(
+            context = context,
+            title = title,
+            body = body,
+            speakText = textToSpeak,
+            speakLang = _appLanguage.value
+        )
     }
 
     private fun startTicking(context: Context) {
@@ -270,9 +279,29 @@ class TimerViewModel(application: Application) : AndroidViewModel(application) {
                     val currentIdx = _currentStepIndex.value ?: 0
                     val isLast = currentIdx >= executionPlan.size - 1
                     val title = _currentLabel.value ?: "Intervallum"
-                    val body = if (isLast) "Az összes időzítés lejárt!" else "Időzítés lejárt!"
+                    val body = if (isLast) {
+                        if (_appLanguage.value == "en") "All timers finished!" else "Az összes időzítés lejárt!"
+                    } else {
+                        if (_appLanguage.value == "en") "Interval expired!" else "Időzítés lejárt!"
+                    }
 
-                    TimerService.playAlarm(context, title, body)
+                    if (isLast) {
+                        TimerService.playAlarm(
+                            context = context,
+                            title = title,
+                            body = body,
+                            speakText = body,
+                            speakLang = _appLanguage.value
+                        )
+                    } else if (!_autoContinue.value) {
+                        TimerService.playAlarm(
+                            context = context,
+                            title = title,
+                            body = body,
+                            speakText = body,
+                            speakLang = _appLanguage.value
+                        )
+                    }
 
                     if (_autoContinue.value) {
                         val nextIndex = currentIdx + 1

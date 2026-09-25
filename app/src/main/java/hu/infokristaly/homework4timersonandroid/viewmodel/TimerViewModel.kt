@@ -128,7 +128,7 @@ class TimerViewModel(application: Application) : AndroidViewModel(application) {
                             j++
                         }
                         if (j <= range.last && items[j].itemType == IntervalItemType.CLOSE_BRACKET) {
-                            val count = maxOf(1, items[j].repeatCount)
+                            val count = maxOf(1, items[i].repeatCount, items[j].repeatCount)
                             val subRange = (i + 1)..<j
                             for (r in 0 until count) {
                                 expand(subRange)

@@ -481,6 +481,102 @@ class TimerViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    fun exportPresetsToUri(context: Context, uri: android.net.Uri) {
+        val gson = com.google.gson.GsonBuilder().setPrettyPrinting().create()
+        try {
+            val json = gson.toJson(_savedLists.value)
+            context.contentResolver.openOutputStream(uri)?.use { outputStream ->
+                outputStream.write(json.toByteArray(Charsets.UTF_8))
+            }
+            android.widget.Toast.makeText(
+                context,
+                context.getString(hu.infokristaly.homework4timersonandroid.R.string.export_success_toast),
+                android.widget.Toast.LENGTH_SHORT
+            ).show()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    fun importPresetsFromUri(context: Context, uri: android.net.Uri) {
+        val gson = com.google.gson.Gson()
+        val copiedSuffix = context.getString(hu.infokristaly.homework4timersonandroid.R.string.copied_suffix)
+
+        try {
+            val json = context.contentResolver.openInputStream(uri)?.use { inputStream ->
+                inputStream.bufferedReader(Charsets.UTF_8).readText()
+            } ?: return
+
+            val type = object : com.google.gson.reflect.TypeToken<List<SavedIntervalList>>() {}.type
+            val importedLists: List<SavedIntervalList>? = try {
+                gson.fromJson<List<SavedIntervalList>>(json, type)
+            } catch (_: Exception) {
+                try {
+                    val single = gson.fromJson(json, SavedIntervalList::class.java)
+                    if (single != null) listOf(single) else null
+                } catch (_: Exception) {
+                    null
+                }
+            }
+
+            if (importedLists.isNullOrEmpty()) {
+                android.widget.Toast.makeText(
+                    context,
+                    context.getString(hu.infokristaly.homework4timersonandroid.R.string.import_error_toast),
+                    android.widget.Toast.LENGTH_SHORT
+                ).show()
+                return
+            }
+
+            val currentPresets = _savedLists.value.toMutableList()
+            val existingNames = currentPresets.map { it.name }.toMutableSet()
+            var importedCount = 0
+
+            for (imported in importedLists) {
+                var newName = imported.name.trim()
+                if (newName.isEmpty()) newName = "Preset"
+
+                while (existingNames.contains(newName)) {
+                    newName = "$newName$copiedSuffix"
+                }
+                existingNames.add(newName)
+
+                val newPreset = SavedIntervalList(
+                    id = java.util.UUID.randomUUID().toString(),
+                    name = newName,
+                    createdAt = System.currentTimeMillis(),
+                    items = imported.items.map { item ->
+                        hu.infokristaly.homework4timersonandroid.data.SavedIntervalItem(
+                            id = java.util.UUID.randomUUID().toString(),
+                            minutes = item.minutes,
+                            label = item.label,
+                            itemType = item.itemType,
+                            repeatCount = item.repeatCount
+                        )
+                    }
+                )
+                currentPresets.add(0, newPreset)
+                importedCount++
+            }
+
+            _savedLists.value = currentPresets
+            repo.saveSavedPresets(currentPresets)
+
+            android.widget.Toast.makeText(
+                context,
+                context.getString(hu.infokristaly.homework4timersonandroid.R.string.import_success_toast, importedCount),
+                android.widget.Toast.LENGTH_SHORT
+            ).show()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            android.widget.Toast.makeText(
+                context,
+                context.getString(hu.infokristaly.homework4timersonandroid.R.string.import_error_toast),
+                android.widget.Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+
     private fun showToast() {
         viewModelScope.launch {
             _isShowingSaveSuccessToast.value = true

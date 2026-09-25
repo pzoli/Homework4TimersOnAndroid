@@ -70,6 +70,12 @@
     <string name="rename_title">Edit name</string>
     <string name="enter_new_name">Enter the new name for the preset:</string>
     <string name="new_name">New name</string>
+    <string name="export_presets">Export (JSON)</string>
+    <string name="import_presets">Import (JSON)</string>
+    <string name="export_success_toast">Presets exported successfully!</string>
+    <string name="import_success_toast">Successfully imported %d preset(s)!</string>
+    <string name="import_error_toast">Failed to import presets from selected file.</string>
+    <string name="copied_suffix">" copied"</string>
 
     <!-- Settings Sheet -->
     <string name="app_language">App language</string>

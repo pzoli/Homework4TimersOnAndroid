@@ -70,6 +70,12 @@
     <string name="rename_title">Név szerkesztése</string>
     <string name="enter_new_name">Add meg a sablon új nevét:</string>
     <string name="new_name">Új név</string>
+    <string name="export_presets">Exportálás (JSON)</string>
+    <string name="import_presets">Importálás (JSON)</string>
+    <string name="export_success_toast">Sablonok sikeresen exportálva!</string>
+    <string name="import_success_toast">%d sablon sikeresen importálva!</string>
+    <string name="import_error_toast">Nem sikerült beolvasni a sablonokat a megadott fájlból.</string>
+    <string name="copied_suffix">" másolat"</string>
 
     <!-- Settings Sheet -->
     <string name="app_language">Alkalmazás nyelve</string>

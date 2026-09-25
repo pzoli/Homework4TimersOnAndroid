@@ -2,6 +2,8 @@ package hu.infokristaly.homework4timersonandroid.ui
 
 import android.content.Context
 import android.content.res.Configuration
+import androidx.activity.compose.LocalActivityResultRegistryOwner
+import androidx.activity.result.ActivityResultRegistryOwner
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
@@ -9,7 +11,7 @@ import androidx.compose.ui.platform.LocalContext
 import java.util.Locale
 
 fun createLocalizedContext(context: Context, languageCode: String): Context {
-    val locale = Locale(languageCode)
+    val locale = Locale.forLanguageTag(languageCode)
     Locale.setDefault(locale)
 
     val res = context.resources
@@ -31,8 +33,19 @@ fun LocalizedApp(
     val localizedContext = remember(currentContext, languageCode) {
         createLocalizedContext(currentContext, languageCode)
     }
-    CompositionLocalProvider(
-        LocalContext provides localizedContext,
-        content = content
-    )
+    val registryOwner = LocalActivityResultRegistryOwner.current
+        ?: (currentContext as? ActivityResultRegistryOwner)
+
+    if (registryOwner != null) {
+        CompositionLocalProvider(
+            LocalContext provides localizedContext,
+            LocalActivityResultRegistryOwner provides registryOwner,
+            content = content
+        )
+    } else {
+        CompositionLocalProvider(
+            LocalContext provides localizedContext,
+            content = content
+        )
+    }
 }

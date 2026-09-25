@@ -75,10 +75,29 @@ import hu.infokristaly.homework4timersonandroid.data.IntervalItemType
 import hu.infokristaly.homework4timersonandroid.data.TimerIntervalItem
 import hu.infokristaly.homework4timersonandroid.viewmodel.TimerViewModel
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TimerMainScreen(viewModel: TimerViewModel) {
     val context = LocalContext.current
+
+    val exportLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.CreateDocument("application/json")
+    ) { uri ->
+        if (uri != null) {
+            viewModel.exportPresetsToUri(context, uri)
+        }
+    }
+
+    val importLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.OpenDocument()
+    ) { uri ->
+        if (uri != null) {
+            viewModel.importPresetsFromUri(context, uri)
+        }
+    }
 
     val storedItems by viewModel.storedItems.collectAsState()
     val savedLists by viewModel.savedLists.collectAsState()
@@ -608,6 +627,20 @@ fun TimerMainScreen(viewModel: TimerViewModel) {
                 },
                 onDeletePreset = { preset ->
                     viewModel.deletePreset(preset)
+                },
+                onExportClick = {
+                    try {
+                        exportLauncher.launch("homework4timers_presets.json")
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                },
+                onImportClick = {
+                    try {
+                        importLauncher.launch(arrayOf("application/json", "*/*"))
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
                 }
             )
         }

@@ -11,13 +11,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.FolderSpecial
+import androidx.compose.material.icons.filled.Upload
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Button
@@ -61,7 +62,9 @@ fun SavedPresetsSheet(
     onLoadPreset: (SavedIntervalList) -> Unit,
     onSaveCurrentAsNew: (String) -> Unit,
     onRenamePreset: (SavedIntervalList, String) -> Unit,
-    onDeletePreset: (SavedIntervalList) -> Unit
+    onDeletePreset: (SavedIntervalList) -> Unit,
+    onExportClick: () -> Unit,
+    onImportClick: () -> Unit
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
@@ -136,7 +139,7 @@ fun SavedPresetsSheet(
                     modifier = Modifier.weight(1f),
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-                    items(savedLists, key = { it.id }) { list ->
+                    itemsIndexed(savedLists, key = { index, list -> "${list.id}_$index" }) { _, list ->
                         val isActive = list.id == activePresetID
                         Card(
                             modifier = Modifier.fillMaxWidth(),
@@ -206,9 +209,35 @@ fun SavedPresetsSheet(
 
             Spacer(modifier = Modifier.height(12.dp))
 
+            HorizontalDivider()
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                OutlinedButton(
+                    onClick = onExportClick,
+                    modifier = Modifier.weight(1f),
+                    enabled = savedLists.isNotEmpty()
+                ) {
+                    Icon(Icons.Default.Upload, contentDescription = null)
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(stringResource(R.string.export_presets))
+                }
+
+                OutlinedButton(
+                    onClick = onImportClick,
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Icon(Icons.Default.Download, contentDescription = null)
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(stringResource(R.string.import_presets))
+                }
+            }
+
             if (currentItems.isNotEmpty()) {
-                HorizontalDivider()
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(8.dp))
                 Button(
                     onClick = {
                         saveAsNewName = ""

@@ -294,11 +294,16 @@ class TimerViewModel(application: Application) : AndroidViewModel(application) {
                             speakLang = _appLanguage.value
                         )
                     } else if (!_autoContinue.value) {
+                        val speakText = if (_appLanguage.value == "en") {
+                            "$title section expired"
+                        } else {
+                            "$title szakasz lejárt"
+                        }
                         TimerService.playAlarm(
                             context = context,
                             title = title,
                             body = body,
-                            speakText = body,
+                            speakText = speakText,
                             speakLang = _appLanguage.value
                         )
                     }

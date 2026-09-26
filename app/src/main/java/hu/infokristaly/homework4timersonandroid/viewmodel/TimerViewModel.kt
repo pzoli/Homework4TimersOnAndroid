@@ -239,6 +239,32 @@ class TimerViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    fun skipToPreviousStep(context: Context) {
+        if (!_isRunning.value) return
+        val current = _currentStepIndex.value ?: return
+        if (current > 0) {
+            val prevIndex = current - 1
+            _isWaitingForAcknowledgment.value = false
+            setupStep(context, prevIndex)
+            if (!_isPaused.value) {
+                startTicking(context)
+            }
+        }
+    }
+
+    fun skipToNextStep(context: Context) {
+        if (!_isRunning.value) return
+        val current = _currentStepIndex.value ?: return
+        if (current < executionPlan.size - 1) {
+            val nextIndex = current + 1
+            _isWaitingForAcknowledgment.value = false
+            setupStep(context, nextIndex)
+            if (!_isPaused.value) {
+                startTicking(context)
+            }
+        }
+    }
+
     private fun setupStep(context: Context, stepIndex: Int) {
         if (stepIndex >= executionPlan.size) return
         val step = executionPlan[stepIndex]

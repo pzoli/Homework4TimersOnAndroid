@@ -22,6 +22,8 @@
     <string name="play">Play</string>
     <string name="pause">Pause</string>
     <string name="stop">Stop</string>
+    <string name="previous_step">Previous step</string>
+    <string name="next_step">Next step</string>
     <string name="preset_saved_toast">Preset saved successfully!</string>
 
     <!-- Toolbar & Menu -->

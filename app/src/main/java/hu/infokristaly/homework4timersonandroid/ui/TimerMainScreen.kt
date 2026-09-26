@@ -32,6 +32,8 @@ import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.SkipNext
+import androidx.compose.material.icons.filled.SkipPrevious
 import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material3.AlertDialog
@@ -526,10 +528,21 @@ fun TimerMainScreen(viewModel: TimerViewModel) {
                     // Action Buttons
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
                         val canPlay = (!isRunning || isPaused || isWaitingForAcknowledgment) &&
                                 viewModel.buildExecutionPlan(storedItems).isNotEmpty()
+                        val canSkipPrevious = isRunning && (currentStepIndex ?: 0) > 0
+                        val canSkipNext = isRunning && (currentStepIndex ?: 0) < (totalStepsCount ?: 0) - 1
+
+                        Button(
+                            onClick = { viewModel.skipToPreviousStep(context) },
+                            enabled = canSkipPrevious,
+                            modifier = Modifier.weight(1f),
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0288D1))
+                        ) {
+                            Icon(Icons.Default.SkipPrevious, contentDescription = stringResource(R.string.previous_step))
+                        }
 
                         Button(
                             onClick = {
@@ -555,6 +568,15 @@ fun TimerMainScreen(viewModel: TimerViewModel) {
                             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF9800))
                         ) {
                             Icon(Icons.Default.Pause, contentDescription = stringResource(R.string.pause))
+                        }
+
+                        Button(
+                            onClick = { viewModel.skipToNextStep(context) },
+                            enabled = canSkipNext,
+                            modifier = Modifier.weight(1f),
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0288D1))
+                        ) {
+                            Icon(Icons.Default.SkipNext, contentDescription = stringResource(R.string.next_step))
                         }
 
                         Button(

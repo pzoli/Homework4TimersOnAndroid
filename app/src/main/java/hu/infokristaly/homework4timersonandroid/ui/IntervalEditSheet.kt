@@ -6,8 +6,13 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
@@ -36,6 +41,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import hu.infokristaly.homework4timersonandroid.R
@@ -72,7 +78,10 @@ fun IntervalEditSheet(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .verticalScroll(rememberScrollState())
                 .padding(24.dp)
+                .navigationBarsPadding()
+                .imePadding()
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -136,7 +145,10 @@ fun IntervalEditSheet(
                                 value = minutesText,
                                 onValueChange = { minutesText = it },
                                 label = { Text(stringResource(R.string.minutes)) },
-                                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                                keyboardOptions = KeyboardOptions(
+                                    keyboardType = KeyboardType.Number,
+                                    imeAction = ImeAction.Next
+                                ),
                                 modifier = Modifier.fillMaxWidth(),
                                 singleLine = true
                             )
@@ -145,6 +157,19 @@ fun IntervalEditSheet(
                                 value = labelText,
                                 onValueChange = { labelText = it },
                                 label = { Text(stringResource(R.string.label)) },
+                                keyboardOptions = KeyboardOptions(
+                                    keyboardType = KeyboardType.Text,
+                                    imeAction = ImeAction.Done
+                                ),
+                                keyboardActions = KeyboardActions(
+                                    onDone = {
+                                        if (isFormValid) {
+                                            val m = minutesText.toIntOrNull() ?: 1
+                                            onSave(itemType, m, labelText.trim(), repeatCount)
+                                            onDismiss()
+                                        }
+                                    }
+                                ),
                                 modifier = Modifier.fillMaxWidth(),
                                 singleLine = true
                             )

@@ -4,4 +4,6 @@ You can repeat intervals any time like a professional scheduler.
 
 User interface is multilingual (english and hungarian), please see the settings panel.
 
+If you like this app, please [buy me a caffee](https://buymeacoffee.com/pzoli).
+
 ![Runing intervals 1](docs/IMG_0001.png)

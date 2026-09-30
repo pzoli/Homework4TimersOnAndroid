@@ -22,6 +22,7 @@ import androidx.compose.material.icons.filled.Upload
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -74,6 +75,8 @@ fun SavedPresetsSheet(
 
     var presetToRename by remember { mutableStateOf<SavedIntervalList?>(null) }
     var renameText by remember { mutableStateOf("") }
+
+    var presetToDelete by remember { mutableStateOf<SavedIntervalList?>(null) }
 
     val dateFormat = remember { SimpleDateFormat("yyyy.MM.dd. HH:mm", Locale.getDefault()) }
 
@@ -180,7 +183,7 @@ fun SavedPresetsSheet(
                                         }) {
                                             Icon(Icons.Default.Edit, contentDescription = stringResource(R.string.edit_name))
                                         }
-                                        IconButton(onClick = { onDeletePreset(list) }) {
+                                        IconButton(onClick = { presetToDelete = list }) {
                                             Icon(Icons.Default.Delete, contentDescription = stringResource(R.string.delete), tint = MaterialTheme.colorScheme.error)
                                         }
                                     }
@@ -330,6 +333,35 @@ fun SavedPresetsSheet(
             },
             dismissButton = {
                 TextButton(onClick = { presetToRename = null }) {
+                    Text(stringResource(R.string.cancel))
+                }
+            }
+        )
+    }
+
+    if (presetToDelete != null) {
+        val target = presetToDelete
+        AlertDialog(
+            onDismissRequest = { presetToDelete = null },
+            title = { Text(stringResource(R.string.delete_preset_confirm_title)) },
+            text = {
+                Text(stringResource(R.string.delete_preset_confirm_message, target?.name ?: ""))
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        if (target != null) {
+                            onDeletePreset(target)
+                        }
+                        presetToDelete = null
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
+                ) {
+                    Text(stringResource(R.string.delete))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { presetToDelete = null }) {
                     Text(stringResource(R.string.cancel))
                 }
             }

@@ -72,6 +72,8 @@
     <string name="rename_title">Név szerkesztése</string>
     <string name="enter_new_name">Add meg a sablon új nevét:</string>
     <string name="new_name">Új név</string>
+    <string name="delete_preset_confirm_title">Sablon törlése</string>
+    <string name="delete_preset_confirm_message">Biztosan törölni szeretnéd a(z) \"%s\" sablont?</string>
     <string name="export_presets">Exportálás (JSON)</string>
     <string name="export_single_preset">Sablon exportálása</string>
     <string name="import_presets">Importálás (JSON)</string>

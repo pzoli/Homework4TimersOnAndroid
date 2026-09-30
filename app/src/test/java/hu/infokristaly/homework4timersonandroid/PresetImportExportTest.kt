@@ -79,4 +79,25 @@ class PresetImportExportTest {
         assertEquals("Running copied copied", resultNames[0])
         assertEquals("Walking", resultNames[1])
     }
+
+    @Test
+    fun testSinglePresetJsonExportAndImport() {
+        val singlePreset = SavedIntervalList(
+            id = "sp1",
+            name = "Sprint Workout",
+            createdAt = 2000L,
+            items = listOf(
+                SavedIntervalItem(id = "si1", minutes = 3, label = "Sprint", itemType = IntervalItemType.INTERVAL)
+            )
+        )
+
+        val json = gson.toJson(listOf(singlePreset))
+        val type = object : TypeToken<List<SavedIntervalList>>() {}.type
+        val deserializedList: List<SavedIntervalList> = gson.fromJson(json, type)
+
+        assertEquals(1, deserializedList.size)
+        assertEquals("Sprint Workout", deserializedList[0].name)
+        assertEquals(1, deserializedList[0].items.size)
+        assertEquals("Sprint", deserializedList[0].items[0].label)
+    }
 }

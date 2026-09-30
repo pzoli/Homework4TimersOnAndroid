@@ -73,6 +73,7 @@
     <string name="enter_new_name">Enter the new name for the preset:</string>
     <string name="new_name">New name</string>
     <string name="export_presets">Export (JSON)</string>
+    <string name="export_single_preset">Export preset</string>
     <string name="import_presets">Import (JSON)</string>
     <string name="export_success_toast">Presets exported successfully!</string>
     <string name="import_success_toast">Successfully imported %d preset(s)!</string>

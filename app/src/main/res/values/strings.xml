@@ -73,6 +73,7 @@
     <string name="enter_new_name">Add meg a sablon új nevét:</string>
     <string name="new_name">Új név</string>
     <string name="export_presets">Exportálás (JSON)</string>
+    <string name="export_single_preset">Sablon exportálása</string>
     <string name="import_presets">Importálás (JSON)</string>
     <string name="export_success_toast">Sablonok sikeresen exportálva!</string>
     <string name="import_success_toast">%d sablon sikeresen importálva!</string>

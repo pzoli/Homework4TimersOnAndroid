@@ -9,12 +9,14 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -74,6 +76,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import hu.infokristaly.homework4timersonandroid.R
 import hu.infokristaly.homework4timersonandroid.data.IntervalItemType
+import hu.infokristaly.homework4timersonandroid.data.SavedIntervalList
 import hu.infokristaly.homework4timersonandroid.data.TimerIntervalItem
 import hu.infokristaly.homework4timersonandroid.viewmodel.TimerViewModel
 
@@ -85,12 +88,24 @@ import androidx.activity.result.contract.ActivityResultContracts
 fun TimerMainScreen(viewModel: TimerViewModel) {
     val context = LocalContext.current
 
+    var pendingSingleExportPreset by remember { mutableStateOf<SavedIntervalList?>(null) }
+
     val exportLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.CreateDocument("application/json")
     ) { uri ->
         if (uri != null) {
             viewModel.exportPresetsToUri(context, uri)
         }
+    }
+
+    val exportSingleLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.CreateDocument("application/json")
+    ) { uri ->
+        val preset = pendingSingleExportPreset
+        if (uri != null && preset != null) {
+            viewModel.exportSinglePresetToUri(context, preset, uri)
+        }
+        pendingSingleExportPreset = null
     }
 
     val importLauncher = rememberLauncherForActivityResult(
@@ -246,33 +261,56 @@ fun TimerMainScreen(viewModel: TimerViewModel) {
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
+                            Row(
+                                modifier = Modifier.weight(1f),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
                                 Icon(
                                     Icons.Default.Folder,
                                     contentDescription = null,
                                     tint = MaterialTheme.colorScheme.primary,
-                                    modifier = Modifier.padding(end = 6.dp)
+                                    modifier = Modifier.padding(end = 8.dp)
                                 )
-                                Text(
-                                    text = stringResource(R.string.loaded_preset_label),
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                                Text(
-                                    text = if (activePresetName.isEmpty()) stringResource(R.string.no_preset_custom) else activePresetName,
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    fontWeight = FontWeight.Bold
-                                )
+                                Column(modifier = Modifier.weight(1f)) {
+                                    Text(
+                                        text = stringResource(R.string.loaded_preset_label),
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                    Text(
+                                        text = if (activePresetName.isEmpty()) stringResource(R.string.no_preset_custom) else activePresetName,
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        fontWeight = FontWeight.Bold,
+                                        maxLines = 1,
+                                        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                                    )
+                                }
                             }
 
-                            if (currentLoadedPreset != null && storedItems.isNotEmpty()) {
+                            if (storedItems.isNotEmpty()) {
+                                Spacer(modifier = Modifier.width(8.dp))
                                 OutlinedButton(
-                                    onClick = { viewModel.handleSaveAction(context) },
+                                    onClick = {
+                                        if (currentLoadedPreset != null) {
+                                            viewModel.handleSaveAction(context)
+                                        } else {
+                                            saveAsNewName = activePresetName
+                                            isShowingSaveAsNewAlert = true
+                                        }
+                                    },
+                                    contentPadding = PaddingValues(horizontal = 10.dp, vertical = 4.dp),
                                     shape = RoundedCornerShape(8.dp)
                                 ) {
-                                    Icon(Icons.Default.Save, contentDescription = null, modifier = Modifier.height(16.dp))
+                                    Icon(
+                                        Icons.Default.Save,
+                                        contentDescription = null,
+                                        modifier = Modifier.size(16.dp)
+                                    )
                                     Spacer(modifier = Modifier.width(4.dp))
-                                    Text(stringResource(R.string.save), fontSize = 12.sp)
+                                    Text(
+                                        text = stringResource(R.string.save),
+                                        fontSize = 12.sp
+                                    )
                                 }
                             }
                         }
@@ -660,6 +698,15 @@ fun TimerMainScreen(viewModel: TimerViewModel) {
                 onImportClick = {
                     try {
                         importLauncher.launch(arrayOf("application/json", "*/*"))
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                },
+                onExportSinglePreset = { preset ->
+                    pendingSingleExportPreset = preset
+                    try {
+                        val safeName = preset.name.trim().replace("\\s+".toRegex(), "_")
+                        exportSingleLauncher.launch("${safeName}.json")
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }

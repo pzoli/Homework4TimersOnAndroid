@@ -524,6 +524,23 @@ class TimerViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    fun exportSinglePresetToUri(context: Context, preset: SavedIntervalList, uri: android.net.Uri) {
+        val gson = com.google.gson.GsonBuilder().setPrettyPrinting().create()
+        try {
+            val json = gson.toJson(listOf(preset))
+            context.contentResolver.openOutputStream(uri)?.use { outputStream ->
+                outputStream.write(json.toByteArray(Charsets.UTF_8))
+            }
+            android.widget.Toast.makeText(
+                context,
+                context.getString(hu.infokristaly.homework4timersonandroid.R.string.export_success_toast),
+                android.widget.Toast.LENGTH_SHORT
+            ).show()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
     fun importPresetsFromUri(context: Context, uri: android.net.Uri) {
         val gson = com.google.gson.Gson()
         val copiedSuffix = context.getString(hu.infokristaly.homework4timersonandroid.R.string.copied_suffix)

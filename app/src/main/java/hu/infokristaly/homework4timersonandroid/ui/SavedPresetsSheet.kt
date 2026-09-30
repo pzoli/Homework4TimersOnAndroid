@@ -64,7 +64,8 @@ fun SavedPresetsSheet(
     onRenamePreset: (SavedIntervalList, String) -> Unit,
     onDeletePreset: (SavedIntervalList) -> Unit,
     onExportClick: () -> Unit,
-    onImportClick: () -> Unit
+    onImportClick: () -> Unit,
+    onExportSinglePreset: (SavedIntervalList) -> Unit
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
@@ -170,6 +171,9 @@ fun SavedPresetsSheet(
                                     }
 
                                     Row {
+                                        IconButton(onClick = { onExportSinglePreset(list) }) {
+                                            Icon(Icons.Default.Upload, contentDescription = stringResource(R.string.export_single_preset))
+                                        }
                                         IconButton(onClick = {
                                             presetToRename = list
                                             renameText = list.name
